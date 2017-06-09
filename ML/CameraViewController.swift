@@ -12,7 +12,6 @@ import AVFoundation
 
 class CameraViewController: UIViewController {
     @IBOutlet weak var previewView: PreviewView!
-    @IBOutlet weak var captureButton: UIButton!
     
     @IBOutlet weak var classLabel: UILabel!
     
@@ -31,8 +30,8 @@ class CameraViewController: UIViewController {
     private let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil) // Communicate with the session and other session objects on this queue.
     private var setupResult: SessionSetupResult = .success
     var videoDeviceInput: AVCaptureDeviceInput!
-    lazy var model: Inceptionv3 = {
-        let model = Inceptionv3()
+    lazy var model: Resnet50 = {
+        let model = Resnet50()
         return model
     }()
     
@@ -174,75 +173,13 @@ class CameraViewController: UIViewController {
             session.commitConfiguration()
             return
         }
-        
-        // Add audio input.
-        do {
-            let audioDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)
-            let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
-            
-            if session.canAddInput(audioDeviceInput) {
-                session.addInput(audioDeviceInput)
-            }
-            else {
-                print("Could not add audio device input to the session")
-            }
-        }
-        catch {
-            print("Could not create audio device input: \(error)")
-        }
-        
-        // Add photo output.
-        if session.canAddOutput(photoOutput)
-        {
-            session.addOutput(photoOutput)
-            
-            photoOutput.isHighResolutionCaptureEnabled = true
-        }
-        else {
-            print("Could not add photo output to the session")
-            setupResult = .configurationFailed
-            session.commitConfiguration()
-            return
-        }
-        
-        session.commitConfiguration()
-    }
-    
-    @IBAction func capturePhoto(_ sender: UIButton) {
-        sessionQueue.async {
-            // Capture a JPEG photo with flash set to auto and high resolution photo enabled.
-            let photoSettings = AVCapturePhotoSettings()
-            photoSettings.flashMode = .auto
-            photoSettings.isHighResolutionPhotoEnabled = true
-            if photoSettings.availablePreviewPhotoPixelFormatTypes.count > 0 {
-                photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String : photoSettings.availablePreviewPhotoPixelFormatTypes.first!,
-                                                    kCVPixelBufferWidthKey as String : 299,
-                                                    kCVPixelBufferHeightKey as String : 299]
-            }
-            self.photoOutput.capturePhoto(with: photoSettings, delegate: self)
-        }
-    }
-}
-
-extension CameraViewController: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        photoData = photo.fileDataRepresentation()
-        if let imageBuffer = photo.previewPixelBuffer {
-            
-            CVPixelBufferFillExtendedPixels(imageBuffer)
-            
-            let model = Inceptionv3()
-            if let output = try? model.prediction(image: imageBuffer) {
-                print(output.classLabel)
-            }
-        }
     }
 }
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         if let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            let image = CIImage(cvImageBuffer: pixcelBuffer).cropping(to: CGRect(x: 0, y: 0, width: 299, height: 299))
+            let image = CIImage(cvImageBuffer: pixcelBuffer).cropping(to: CGRect(x: 0, y: 0, width: 224, height: 224))
             let cgImage = CIContext().createCGImage(image, from: image.extent)!
             let buffer = ImageConverter.pixelBuffer(from: cgImage)!.takeRetainedValue()
             if let output = try? model.prediction(image: buffer) {

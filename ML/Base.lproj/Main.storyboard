@@ -32,7 +32,7 @@
                                                     <constraint firstAttribute="height" constant="25" id="oj9-VG-5Ff"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                                <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ABb-J9-ifa">
@@ -41,7 +41,7 @@
                                                     <constraint firstAttribute="height" constant="20" id="dCv-VC-ubG"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" red="1" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -64,32 +64,16 @@
                                     <constraint firstAttribute="bottom" secondItem="21F-fg-3Ey" secondAttribute="bottom" id="sIQ-LA-OBY"/>
                                 </constraints>
                             </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yih-C6-mU3">
-                                <rect key="frame" x="152" y="577" width="70" height="70"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="7EK-75-hf9"/>
-                                    <constraint firstAttribute="width" constant="70" id="rki-Dy-kYy"/>
-                                </constraints>
-                                <state key="normal" image="shutter"/>
-                                <state key="selected" image="shutterPressed"/>
-                                <state key="highlighted" image="shutterPressed"/>
-                                <connections>
-                                    <action selector="capturePhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AaB-bu-oWz"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="3bc-iq-bUp" secondAttribute="bottom" id="Qnw-aO-9rD"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="yih-C6-mU3" secondAttribute="bottom" constant="20" id="USK-EL-OVM"/>
                             <constraint firstItem="3bc-iq-bUp" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YJP-wH-lsN"/>
                             <constraint firstAttribute="trailing" secondItem="3bc-iq-bUp" secondAttribute="trailing" id="Z8P-20-OzU"/>
                             <constraint firstItem="3bc-iq-bUp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="hY0-QW-gxU"/>
-                            <constraint firstItem="yih-C6-mU3" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="n91-7d-ZNb"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="captureButton" destination="yih-C6-mU3" id="Qhb-Yk-yh8"/>
                         <outlet property="classLabel" destination="z4K-II-TOH" id="2lK-HV-8Cs"/>
                         <outlet property="previewView" destination="3bc-iq-bUp" id="DB6-df-9Pf"/>
                         <outlet property="rateLabel" destination="ABb-J9-ifa" id="Dx7-7a-hje"/>
@@ -99,8 +83,4 @@
             </objects>
         </scene>
     </scenes>
-    <resources>
-        <image name="shutter" width="72" height="72"/>
-        <image name="shutterPressed" width="72" height="72"/>
-    </resources>
 </document>
