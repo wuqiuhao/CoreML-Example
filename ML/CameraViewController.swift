@@ -181,6 +181,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         guard let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let ciimage = CIImage(cvImageBuffer: pixcelBuffer)
+        // This is a poor way to resize capature output data.
         guard let uiimage = UIImage(ciImage: ciimage).resize(CGSize(width: 224, height: 224)),
             let cgimage = uiimage.cgImage,
             let buffer = ImageConverter.pixelBuffer(from: cgimage)?.takeRetainedValue(),
