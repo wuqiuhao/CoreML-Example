@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		291C27681EEA488A004C52AB /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 291C27671EEA488A004C52AB /* Resnet50.mlmodel */; };
+		291C276B1EEA6BDA004C52AB /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 291C276A1EEA6BD2004C52AB /* Resnet50.mlmodel */; };
 		EFA602C51EE9B03400B49434 /* ImageConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EFA602C41EE9B03400B49434 /* ImageConverter.m */; };
 		EFE623811EE8430F00E0D5D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE623801EE8430F00E0D5D7 /* AppDelegate.swift */; };
 		EFE623861EE8430F00E0D5D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFE623841EE8430F00E0D5D7 /* Main.storyboard */; };
@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		291C27671EEA488A004C52AB /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = Resnet50.mlmodel; path = ../../../Downloads/Resnet50.mlmodel; sourceTree = "<group>"; };
+		291C276A1EEA6BD2004C52AB /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
 		EFA602C21EE9B03400B49434 /* ML-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ML-Bridging-Header.h"; sourceTree = "<group>"; };
 		EFA602C31EE9B03400B49434 /* ImageConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageConverter.h; sourceTree = "<group>"; };
 		EFA602C41EE9B03400B49434 /* ImageConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageConverter.m; sourceTree = "<group>"; };
@@ -62,7 +62,7 @@
 		EFE6237F1EE8430F00E0D5D7 /* ML */ = {
 			isa = PBXGroup;
 			children = (
-				291C27671EEA488A004C52AB /* Resnet50.mlmodel */,
+				291C276A1EEA6BD2004C52AB /* Resnet50.mlmodel */,
 				EFE623801EE8430F00E0D5D7 /* AppDelegate.swift */,
 				EFE623841EE8430F00E0D5D7 /* Main.storyboard */,
 				EFE623871EE8430F00E0D5D7 /* Assets.xcassets */,
@@ -151,10 +151,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				291C276B1EEA6BDA004C52AB /* Resnet50.mlmodel in Sources */,
 				EFE623951EE844D500E0D5D7 /* PreviewView.swift in Sources */,
 				EFE623811EE8430F00E0D5D7 /* AppDelegate.swift in Sources */,
 				EFE623931EE844AF00E0D5D7 /* CameraViewController.swift in Sources */,
-				291C27681EEA488A004C52AB /* Resnet50.mlmodel in Sources */,
 				EFA602C51EE9B03400B49434 /* ImageConverter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
