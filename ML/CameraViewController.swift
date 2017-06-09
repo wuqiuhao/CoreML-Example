@@ -12,25 +12,18 @@ import AVFoundation
 
 class CameraViewController: UIViewController {
     @IBOutlet weak var previewView: PreviewView!
-    
     @IBOutlet weak var classLabel: UILabel!
-    
     @IBOutlet weak var rateLabel: UILabel!
-    
-    var photoData: Data? = nil
     private enum SessionSetupResult {
         case success
         case notAuthorized
         case configurationFailed
     }
-    private let photoOutput = AVCapturePhotoOutput()
-    private let videoOutput = AVCaptureVideoDataOutput()
     private let session = AVCaptureSession()
     private var isSessionRunning = false
     private let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil) // Communicate with the session and other session objects on this queue.
     private var setupResult: SessionSetupResult = .success
-    var videoDeviceInput: AVCaptureDeviceInput!
-    lazy var model: Resnet50 = {
+    fileprivate lazy var model: Resnet50 = {
         let model = Resnet50()
         return model
     }()
@@ -116,6 +109,14 @@ class CameraViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
+    override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
+        if session.isRunning {
+            session.stopRunning()
+        } else {
+            session.startRunning()
+        }
+    }
+    
     // Call this on the session queue.
     private func configureSession() {
         if setupResult != .success {
@@ -151,7 +152,7 @@ class CameraViewController: UIViewController {
             
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
-                self.videoDeviceInput = videoDeviceInput
+                let videoOutput = AVCaptureVideoDataOutput()
                 videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_32BGRA]
                 videoOutput.alwaysDiscardsLateVideoFrames = true
                 if session.canAddOutput(videoOutput) {
@@ -178,17 +179,29 @@ class CameraViewController: UIViewController {
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-        if let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            let image = CIImage(cvImageBuffer: pixcelBuffer).cropping(to: CGRect(x: 0, y: 0, width: 224, height: 224))
-            let cgImage = CIContext().createCGImage(image, from: image.extent)!
-            let buffer = ImageConverter.pixelBuffer(from: cgImage)!.takeRetainedValue()
-            if let output = try? model.prediction(image: buffer) {
-                let rate = "\(output.classLabelProbs.max(by: {$0.0.value < $0.1.value})?.value ?? 0 * 100.0)"
-                DispatchQueue.main.async {
-                    self.classLabel.text = output.classLabel
-                    self.rateLabel.text = rate
-                }
-            }
+        guard let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let ciimage = CIImage(cvImageBuffer: pixcelBuffer)
+        guard let uiimage = UIImage(ciImage: ciimage).resize(CGSize(width: 224, height: 224)),
+            let cgimage = uiimage.cgImage,
+            let buffer = ImageConverter.pixelBuffer(from: cgimage)?.takeRetainedValue(),
+            let output = try? model.prediction(image: buffer) else {
+                return
         }
+        let rate = output.classLabelProbs.max(by: {$0.0.value < $0.1.value})?.value ?? 0
+        let rateStr = "\(Int(rate * 100))%"
+        DispatchQueue.main.async {
+            self.classLabel.text = output.classLabel
+            self.rateLabel.text = rateStr
+        }
+    }
+}
+
+extension UIImage {
+    func resize(_ size: CGSize)-> UIImage? {
+        UIGraphicsBeginImageContext(size)
+        draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
