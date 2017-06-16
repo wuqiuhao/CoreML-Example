@@ -179,15 +179,17 @@ class CameraViewController: UIViewController {
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-        guard let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        let ciimage = CIImage(cvImageBuffer: pixcelBuffer)
-        // This is a poor way to resize capature output data.
-        guard let uiimage = UIImage(ciImage: ciimage).resize(CGSize(width: 224, height: 224)),
-            let cgimage = uiimage.cgImage,
-            let buffer = ImageConverter.pixelBuffer(from: cgimage)?.takeRetainedValue(),
-            let output = try? model.prediction(image: buffer) else {
-                return
-        }
+//        guard let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+//        let ciimage = CIImage(cvImageBuffer: pixcelBuffer)
+//        // This is a poor way to resize capature output data.
+//        guard let uiimage = UIImage(ciImage: ciimage).resize(CGSize(width: 224, height: 224)),
+//            let cgimage = uiimage.cgImage,
+//            let buffer = ImageConverter.pixelBuffer(from: cgimage)?.takeRetainedValue(),
+//            let output = try? model.prediction(image: buffer) else {
+//                return
+//        }
+        let buffer = ImageConverter.modifyImage(sampleBuffer).takeRetainedValue()
+        let output = try! model.prediction(image: buffer)
         let rate = output.classLabelProbs.max(by: {$0.0.value < $0.1.value})?.value ?? 0
         let rateStr = "\(Int(rate * 100))%"
         DispatchQueue.main.async {

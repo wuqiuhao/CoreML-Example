@@ -11,4 +11,5 @@
 
 @interface ImageConverter : NSObject
 + (CVPixelBufferRef)pixelBufferFromImage:(CGImageRef)image;
++ (CVPixelBufferRef)modifyImage:(CMSampleBufferRef) sampleBuffer;
 @end
