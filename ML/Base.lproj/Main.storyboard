@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -17,20 +18,20 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3bc-iq-bUp" customClass="PreviewView" customModule="ML" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KJz-bp-vuD">
-                                        <rect key="frame" x="0.0" y="587" width="375" height="80"/>
+                                        <rect key="frame" x="0.0" y="656" width="414" height="80"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="1Qn-OA-Nzn">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z4K-II-TOH">
-                                                    <rect key="frame" x="0.0" y="10" width="375" height="25"/>
+                                                    <rect key="frame" x="0.0" y="10" width="414" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="25" id="QAu-NM-S5z"/>
                                                     </constraints>
@@ -39,7 +40,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ABb-J9-ifa">
-                                                    <rect key="frame" x="0.0" y="50" width="375" height="20"/>
+                                                    <rect key="frame" x="0.0" y="50" width="414" height="20"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="20" id="sSF-57-8Ka"/>
                                                     </constraints>
@@ -62,10 +63,20 @@
                                         </constraints>
                                         <blurEffect style="light"/>
                                     </visualEffectView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iXQ-9l-XEG">
+                                        <rect key="frame" x="90.333333333333314" y="251.66666666666669" width="233" height="233.00000000000006"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="233" id="0LQ-Lm-Fq7"/>
+                                            <constraint firstAttribute="width" secondItem="iXQ-9l-XEG" secondAttribute="height" multiplier="1:1" id="fi5-7u-cWV"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="KJz-bp-vuD" secondAttribute="trailing" id="16i-cs-8mE"/>
+                                    <constraint firstItem="iXQ-9l-XEG" firstAttribute="centerX" secondItem="3bc-iq-bUp" secondAttribute="centerX" id="1II-EE-boo"/>
+                                    <constraint firstItem="iXQ-9l-XEG" firstAttribute="centerY" secondItem="3bc-iq-bUp" secondAttribute="centerY" id="6nN-46-Z3s"/>
                                     <constraint firstAttribute="bottom" secondItem="KJz-bp-vuD" secondAttribute="bottom" id="Kh4-nk-WgC"/>
                                     <constraint firstItem="KJz-bp-vuD" firstAttribute="leading" secondItem="3bc-iq-bUp" secondAttribute="leading" id="Ngw-60-0tl"/>
                                 </constraints>
@@ -83,6 +94,7 @@
                         <outlet property="classLabel" destination="z4K-II-TOH" id="2lK-HV-8Cs"/>
                         <outlet property="previewView" destination="3bc-iq-bUp" id="DB6-df-9Pf"/>
                         <outlet property="rateLabel" destination="ABb-J9-ifa" id="Dx7-7a-hje"/>
+                        <outlet property="rectabgle" destination="iXQ-9l-XEG" id="QA4-3l-Ijq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

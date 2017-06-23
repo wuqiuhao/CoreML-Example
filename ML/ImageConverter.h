@@ -10,6 +10,5 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface ImageConverter : NSObject
-+ (CVPixelBufferRef)pixelBufferFromImage:(CGImageRef)image;
-+ (CVPixelBufferRef)modifyImage:(CMSampleBufferRef) sampleBuffer;
++ (CVPixelBufferRef)modifyImage:(CMSampleBufferRef) sampleBuffer size:(CGSize)size;
 @end

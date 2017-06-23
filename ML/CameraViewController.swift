@@ -19,6 +19,7 @@ class CameraViewController: UIViewController {
         case notAuthorized
         case configurationFailed
     }
+    var videoDeviceInput: AVCaptureDeviceInput!
     private let session = AVCaptureSession()
     private var isSessionRunning = false
     private let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil) // Communicate with the session and other session objects on this queue.
@@ -28,8 +29,13 @@ class CameraViewController: UIViewController {
         return model
     }()
     
+    @IBOutlet weak var rectabgle: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        rectabgle.layer.borderWidth = 2.0
+        rectabgle.layer.borderColor = UIColor.yellow.cgColor
         previewView.videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewView.session = session
         
@@ -72,6 +78,7 @@ class CameraViewController: UIViewController {
             switch self.setupResult {
             case .success:
                 self.session.startRunning()
+                self.addObservers()
                 self.isSessionRunning = self.session.isRunning
                 
             case .notAuthorized:
@@ -94,6 +101,42 @@ class CameraViewController: UIViewController {
                     
                     self.present(alertController, animated: true, completion: nil)
                 }
+            }
+        }
+    }
+    
+    private func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(subjectAreaDidChange), name: .AVCaptureDeviceSubjectAreaDidChange, object: videoDeviceInput.device)
+    }
+    
+    func subjectAreaDidChange(notification: NSNotification) {
+        let devicePoint = CGPoint(x: 0.5, y: 0.5)
+        focus(with: .autoFocus, exposureMode: .continuousAutoExposure, at: devicePoint, monitorSubjectAreaChange: false)
+    }
+    
+    private func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool) {
+        sessionQueue.async { [unowned self] in
+            let device = self.videoDeviceInput.device!
+            do {
+                try device.lockForConfiguration()
+                
+                /*
+                 Setting (focus/exposure)PointOfInterest alone does not initiate a (focus/exposure) operation.
+                 Call set(Focus/Exposure)Mode() to apply the new point of interest.
+                 */
+                if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode) {
+                    device.focusPointOfInterest = devicePoint
+                    device.focusMode = focusMode
+                }
+                if device.isExposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode) {
+                    device.exposurePointOfInterest = devicePoint
+                    device.exposureMode = exposureMode
+                }
+                
+                device.isSubjectAreaChangeMonitoringEnabled = monitorSubjectAreaChange
+                device.unlockForConfiguration()
+            } catch {
+                print("Could not lock device for configuration: \(error)")
             }
         }
     }
@@ -129,7 +172,7 @@ class CameraViewController: UIViewController {
          We do not create an AVCaptureMovieFileOutput when setting up the session because the
          AVCaptureMovieFileOutput does not support movie recording with AVCaptureSessionPresetPhoto.
          */
-        session.sessionPreset = AVCaptureSessionPresetPhoto
+        session.sessionPreset = AVCaptureSessionPreset640x480
         
         // Add video input.
         do {
@@ -149,17 +192,21 @@ class CameraViewController: UIViewController {
             }
             
             let videoDeviceInput = try AVCaptureDeviceInput(device: defaultVideoDevice)
-            
+            self.videoDeviceInput = videoDeviceInput
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
                 let videoOutput = AVCaptureVideoDataOutput()
                 videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_32BGRA]
                 videoOutput.alwaysDiscardsLateVideoFrames = true
+                
                 if session.canAddOutput(videoOutput) {
                     session.addOutput(videoOutput)
                 }
+                
                 session.commitConfiguration()
                 videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+                let conn = videoOutput.connection(withMediaType: AVMediaTypeVideo)
+                conn?.videoOrientation = .portrait
             }
             else {
                 print("Could not add video device input to the session")
@@ -179,17 +226,10 @@ class CameraViewController: UIViewController {
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-//        guard let pixcelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-//        let ciimage = CIImage(cvImageBuffer: pixcelBuffer)
-//        // This is a poor way to resize capature output data.
-//        guard let uiimage = UIImage(ciImage: ciimage).resize(CGSize(width: 224, height: 224)),
-//            let cgimage = uiimage.cgImage,
-//            let buffer = ImageConverter.pixelBuffer(from: cgimage)?.takeRetainedValue(),
-//            let output = try? model.prediction(image: buffer) else {
-//                return
-//        }
-        let buffer = ImageConverter.modifyImage(sampleBuffer).takeRetainedValue()
-        let output = try! model.prediction(image: buffer)
+        let buffer = ImageConverter.modifyImage(sampleBuffer, size: CGSize(width:224,height:224)).takeRetainedValue()
+        guard let output = try? model.prediction(image:  buffer) else {
+            return
+        }
         let rate = output.classLabelProbs.max(by: {$0.0.value < $0.1.value})?.value ?? 0
         let rateStr = "\(Int(rate * 100))%"
         DispatchQueue.main.async {
@@ -200,11 +240,19 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 }
 
 extension UIImage {
-    func resize(_ size: CGSize)-> UIImage? {
+    func resize()-> UIImage? {
         UIGraphicsBeginImageContext(size)
         draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        return image
+    }
+    
+    func clip(_ size: CGSize)-> UIImage? {
+        guard let imageRef = self.cgImage?.cropping(to: CGRect(x: CGFloat((self.size.width - size.width) / 2), y: CGFloat((self.size.height - size.height) / 2), width: size.width, height: size.height)) else {
+            return nil
+        }
+        let image = UIImage(cgImage: imageRef, scale: self.scale, orientation: self.imageOrientation)
         return image
     }
 }
