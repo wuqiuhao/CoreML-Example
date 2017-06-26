@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		291C276B1EEA6BDA004C52AB /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 291C276A1EEA6BD2004C52AB /* Resnet50.mlmodel */; };
-		EFA602C51EE9B03400B49434 /* ImageConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = EFA602C41EE9B03400B49434 /* ImageConverter.m */; };
 		EFE623811EE8430F00E0D5D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE623801EE8430F00E0D5D7 /* AppDelegate.swift */; };
 		EFE623861EE8430F00E0D5D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFE623841EE8430F00E0D5D7 /* Main.storyboard */; };
 		EFE623881EE8430F00E0D5D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE623871EE8430F00E0D5D7 /* Assets.xcassets */; };
@@ -19,9 +18,6 @@
 
 /* Begin PBXFileReference section */
 		291C276A1EEA6BD2004C52AB /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
-		EFA602C21EE9B03400B49434 /* ML-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ML-Bridging-Header.h"; sourceTree = "<group>"; };
-		EFA602C31EE9B03400B49434 /* ImageConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageConverter.h; sourceTree = "<group>"; };
-		EFA602C41EE9B03400B49434 /* ImageConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageConverter.m; sourceTree = "<group>"; };
 		EFE6237D1EE8430F00E0D5D7 /* ML.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ML.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFE623801EE8430F00E0D5D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EFE623851EE8430F00E0D5D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -70,9 +66,6 @@
 				EFE6238C1EE8430F00E0D5D7 /* Info.plist */,
 				EFE623921EE844AF00E0D5D7 /* CameraViewController.swift */,
 				EFE623941EE844D500E0D5D7 /* PreviewView.swift */,
-				EFA602C31EE9B03400B49434 /* ImageConverter.h */,
-				EFA602C41EE9B03400B49434 /* ImageConverter.m */,
-				EFA602C21EE9B03400B49434 /* ML-Bridging-Header.h */,
 			);
 			path = ML;
 			sourceTree = "<group>";
@@ -155,7 +148,6 @@
 				EFE623951EE844D500E0D5D7 /* PreviewView.swift in Sources */,
 				EFE623811EE8430F00E0D5D7 /* AppDelegate.swift in Sources */,
 				EFE623931EE844AF00E0D5D7 /* CameraViewController.swift in Sources */,
-				EFA602C51EE9B03400B49434 /* ImageConverter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +277,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.design.ML;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ML/ML-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -302,7 +294,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.design.ML;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ML/ML-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

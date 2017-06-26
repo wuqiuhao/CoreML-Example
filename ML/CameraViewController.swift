@@ -172,7 +172,7 @@ class CameraViewController: UIViewController {
          We do not create an AVCaptureMovieFileOutput when setting up the session because the
          AVCaptureMovieFileOutput does not support movie recording with AVCaptureSessionPresetPhoto.
          */
-        session.sessionPreset = AVCaptureSessionPresetPhoto
+        session.sessionPreset = AVCaptureSessionPreset640x480
         
         // Add video input.
         do {
@@ -205,19 +205,8 @@ class CameraViewController: UIViewController {
                 
                 session.commitConfiguration()
                 videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
-                
-                DispatchQueue.main.async {
-                    /*
-                     Why are we dispatching this to the main queue?
-                     Because AVCaptureVideoPreviewLayer is the backing layer for PreviewView and UIView
-                     can only be manipulated on the main thread.
-                     Note: As an exception to the above rule, it is not necessary to serialize video orientation changes
-                     on the AVCaptureVideoPreviewLayer’s connection with other session manipulation.
-                     
-                     Use the status bar orientation as the initial video orientation. Subsequent orientation changes are
-                     handled by CameraViewController.viewWillTransition(to:with:).
-                     */
-                    self.previewView.videoPreviewLayer.connection?.videoOrientation = .portrait
+                if let videoOutputConnection = videoOutput.connection(withMediaType: AVMediaTypeVideo) {
+                    videoOutputConnection.videoOrientation = .portrait
                 }
             }
             else {
@@ -238,7 +227,6 @@ class CameraViewController: UIViewController {
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-//        let buffer = ImageConverter.modifyImage(sampleBuffer, size: CGSize(width:224,height:224)).takeRetainedValue()
         let buffer = sampleBuffer.resize(CGSize(width:224,height:224))!
         guard let output = try? model.prediction(image:  buffer) else {
             return
@@ -267,10 +255,10 @@ extension CMSampleBuffer {
         let options = [kCVPixelBufferCGImageCompatibilityKey:true,
                        kCVPixelBufferCGBitmapContextCompatibilityKey:true]
         let topMargin = (height - destSize.height) / CGFloat(2)
-        let leftMargin = (width - destSize.width) / CGFloat(2 * 4)
+        let leftMargin = (width - destSize.width) * CGFloat(2)
         let baseAddressStart = Int(bytesPerRow * topMargin + leftMargin)
-        let buf = baseAddress!.assumingMemoryBound(to: UInt32.self)
-        let status = CVPixelBufferCreateWithBytes(kCFAllocatorDefault, Int(destSize.width), Int(destSize.height), kCVPixelFormatType_32BGRA, &buf[baseAddressStart], Int(bytesPerRow), nil, nil, options as CFDictionary, &pixelBuffer)
+        let addressPoint = baseAddress!.assumingMemoryBound(to: UInt8.self)
+        let status = CVPixelBufferCreateWithBytes(kCFAllocatorDefault, Int(destSize.width), Int(destSize.height), kCVPixelFormatType_32BGRA, &addressPoint[baseAddressStart], Int(bytesPerRow), nil, nil, options as CFDictionary, &pixelBuffer)
         if (status != 0) {
             print(status)
             return nil;
